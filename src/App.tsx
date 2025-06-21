@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { GoogleGenAI } from "@google/genai";
 import { getAuth, signInAnonymously } from "firebase/auth";
+import "./App.css";
 
 const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
 console.log(GEMINI_API_KEY);
@@ -94,155 +95,45 @@ function App() {
   signInAnonymously(auth);
 
   return (
-    <div
-      style={{
-        fontFamily:
-          "Inter, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
-        background: "#fff8ee",
-        minHeight: "100vh",
-        padding: 0,
-      }}
-    >
-      <div
-        style={{
-          padding: "32px 20px 20px 20px",
-          maxWidth: "600px",
-          margin: "0 auto",
-        }}
-      >
-        <h1
-          style={{
-            fontFamily:
-              "Inter, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif",
-            fontWeight: 800,
-            fontSize: 36,
-            marginBottom: 8,
-            letterSpacing: "-1px",
-            color: "#b86b36",
-          }}
-        >
-          Haiku Generator
-        </h1>
-        <p style={{ color: "#666", marginBottom: 24, fontSize: 18 }}>
+    <div className="app-container">
+      <div className="app-content">
+        <h1 className="app-title">Haiku Generator</h1>
+        <p className="app-subtitle">
           Generate and save beautiful haikus with AI
         </p>
-        <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+        <div className="input-container">
           <input
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
             placeholder="Enter haiku theme..."
-            style={{
-              padding: "10px 14px",
-              width: "70%",
-              border: "1px solid #ccc",
-              borderRadius: 6,
-              fontSize: 16,
-              fontFamily: "inherit",
-              background: "#fff",
-            }}
+            className="theme-input"
             disabled={loading}
           />
           <button
             onClick={generateHaiku}
             disabled={loading || !theme.trim()}
-            style={{
-              padding: "10px 20px",
-              background: loading || !theme.trim() ? "#b5b5b5" : "#b86b36",
-              color: "#fff",
-              border: "none",
-              borderRadius: 6,
-              fontWeight: 600,
-              fontSize: 16,
-              cursor: loading || !theme.trim() ? "not-allowed" : "pointer",
-              transition: "background 0.2s",
-              boxShadow:
-                loading || !theme.trim() ? "none" : "0 2px 8px #b86b3622",
-            }}
+            className="generate-button"
           >
             {loading ? "Generating..." : "Generate Haiku"}
           </button>
         </div>
-        {error && (
-          <div style={{ color: "red", marginTop: 10, marginBottom: 10 }}>
-            {error}
-          </div>
-        )}
+        {error && <div className="error-message">{error}</div>}
         {currentHaiku && (
-          <div
-            style={{
-              margin: "24px 0",
-              padding: "24px",
-              borderRadius: 12,
-              background: "#fff",
-              boxShadow: "0 2px 12px #0001",
-              border: "1px solid #e5e7eb",
-            }}
-          >
-            <h3
-              style={{
-                fontFamily: "inherit",
-                fontWeight: 700,
-                fontSize: 22,
-                margin: 0,
-                color: "#b86b36",
-              }}
-            >
-              Your Haiku
-            </h3>
-            <pre
-              style={{
-                fontSize: 20,
-                margin: "18px 0 8px 0",
-                fontFamily:
-                  "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-                whiteSpace: "pre-wrap",
-                color: "#222",
-              }}
-            >
-              {currentHaiku.text}
-            </pre>
-            <small style={{ color: "#666" }}>Theme: {currentHaiku.theme}</small>
+          <div className="current-haiku">
+            <h3 className="current-haiku-title">Your Haiku</h3>
+            <pre className="haiku-text">{currentHaiku.text}</pre>
+            <small className="haiku-theme">Theme: {currentHaiku.theme}</small>
           </div>
         )}
-        <div style={{ marginTop: 32 }}>
-          <h3
-            style={{
-              fontFamily: "inherit",
-              fontWeight: 700,
-              fontSize: 20,
-              marginBottom: 12,
-              color: "#222",
-            }}
-          >
-            Past Haikus ({haikus.length})
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="past-haikus-section">
+          <h3 className="past-haikus-title">Past Haikus ({haikus.length})</h3>
+          <div className="haiku-list">
             {haikus.map((haiku) => (
-              <div
-                key={haiku.id}
-                style={{
-                  padding: "16px",
-                  backgroundColor: "#f3f4f6",
-                  borderRadius: 8,
-                  border: "1px solid #e5e7eb",
-                  boxShadow: "0 1px 4px #0001",
-                }}
-              >
-                <pre
-                  style={{
-                    fontSize: 16,
-                    margin: 0,
-                    fontFamily:
-                      "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-                    whiteSpace: "pre-wrap",
-                    color: "#222",
-                  }}
-                >
-                  {haiku.text}
-                </pre>
-                <small style={{ color: "#666" }}>
+              <div key={haiku.id} className="haiku-item">
+                <pre className="haiku-item-text">{haiku.text}</pre>
+                <div className="haiku-item-meta">
                   Theme: {haiku.theme} | {haiku.createdAt.toLocaleDateString()}
-                </small>
+                </div>
               </div>
             ))}
           </div>
